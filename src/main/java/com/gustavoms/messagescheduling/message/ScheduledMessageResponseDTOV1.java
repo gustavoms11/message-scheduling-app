@@ -1,15 +1,33 @@
 package com.gustavoms.messagescheduling.message;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Set;
 
+@ApiModel("ScheduledMessageResponseDTOV1")
 public class ScheduledMessageResponseDTOV1 {
 
+    @ApiModelProperty(value = "Scheduled Message ID")
     private String id;
+
+    @ApiModelProperty(value = "Receiver object ID")
     private String receiverId;
+
+    @ApiModelProperty(value = "Message scheduled date")
     private String scheduledTo;
+
+    @ApiModelProperty(value = "Create at this date")
     private String createdAt;
+
+    @ApiModelProperty(value = "Set of platforms to send this message",
+            allowableValues = "MAIL,SMS,WHATSAPP,PUSH")
     private Set<String> platforms;
+
+    @ApiModelProperty(value = "Message to be sent")
     private String message;
+
+    @ApiModelProperty(value = "Scheduling status", allowableValues = "SCHEDULED,SENT")
     private String status;
 
     public String getId() {

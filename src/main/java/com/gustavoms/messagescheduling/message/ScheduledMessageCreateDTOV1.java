@@ -1,12 +1,27 @@
 package com.gustavoms.messagescheduling.message;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Set;
 
+@ApiModel(value = "ScheduledMessageCreateDTOV1")
 public class ScheduledMessageCreateDTOV1 {
 
+    @ApiModelProperty(value = "Receiver object ID", required = true)
     private String receiverId;
+
+    @ApiModelProperty(value = "Message scheduled date, must follow ISO-8601 pattern",
+            example = "2020-01-01T10:00:00",
+            required = true)
     private String scheduledTo;
+
+    @ApiModelProperty(value = "Receiver platforms receiving the message",
+            required = true,
+            allowableValues = "MAIL,SMS,WHATSAPP,PUSH")
     private Set<String> platforms;
+
+    @ApiModelProperty(value = "Message to be sent", required = true)
     private String message;
 
     public String getReceiverId() {
