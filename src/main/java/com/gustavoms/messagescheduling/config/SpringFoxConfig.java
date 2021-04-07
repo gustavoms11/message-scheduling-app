@@ -18,6 +18,7 @@ public class SpringFoxConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.gustavoms.messagescheduling"))
                 .paths(PathSelectors.any())
                 .build();
+        docket.useDefaultResponseMessages(false);
         docket.tags(new Tag("Scheduling Message API", "Scheduling Message API"));
 
         return docket;
