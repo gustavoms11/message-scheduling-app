@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public class ScheduledMessage {
     @CollectionTable(name = "SCHEDULED_MESSAGE_RECEIVER_PLATFORM", joinColumns = @JoinColumn(name = "ID"))
     @Column(name = "RECEIVER_PLATFORM_ID", length = 36)
     @Enumerated(EnumType.STRING)
-    private Set<ReceiverPlatform> platforms;
+    private Set<ReceiverPlatform> platforms = new LinkedHashSet<>();
 
     @Column(name = "RECEIVER_TYPE", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
