@@ -28,6 +28,9 @@ public class ScheduledMessageSearchDTOV1 {
     @ApiParam(value = "End filter range scheduledTo date")
     private String scheduledToEndDate;
 
+    @ApiParam(value = "Actual schedule status")
+    private String status;
+
     public int getPage() {
         return page;
     }
@@ -90,5 +93,13 @@ public class ScheduledMessageSearchDTOV1 {
 
     public void setScheduledToEndDate(String scheduledToEndDate) {
         this.scheduledToEndDate = scheduledToEndDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

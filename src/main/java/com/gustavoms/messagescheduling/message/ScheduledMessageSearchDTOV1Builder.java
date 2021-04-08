@@ -51,6 +51,11 @@ public final class ScheduledMessageSearchDTOV1Builder {
         return this;
     }
 
+    public ScheduledMessageSearchDTOV1Builder status(String status) {
+        scheduledMessageSearchDTOV1.setStatus(status);
+        return this;
+    }
+
     public ScheduledMessageSearchDTOV1 build() {
         return scheduledMessageSearchDTOV1;
     }

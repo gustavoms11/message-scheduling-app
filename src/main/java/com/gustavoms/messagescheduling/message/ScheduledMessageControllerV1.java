@@ -1,5 +1,8 @@
 package com.gustavoms.messagescheduling.message;
 
+import com.gustavoms.messagescheduling.exception.BadFormattedDateException;
+import com.gustavoms.messagescheduling.exception.ReceiverPlatformNotFoundException;
+import com.gustavoms.messagescheduling.exception.ScheduleStatusNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,7 +42,7 @@ public class ScheduledMessageControllerV1 {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ScheduledMessageResponseDTOV1> post(
             @RequestBody ScheduledMessageCreateDTOV1 scheduledMessage
-    ) {
+    ) throws BadFormattedDateException, ReceiverPlatformNotFoundException {
         var entity = ScheduledMessageMapper
                 .createDTOV1ToScheduledMessage(scheduledMessage);
         var persistedEntity = scheduledMessageService.create(entity);
@@ -55,7 +58,7 @@ public class ScheduledMessageControllerV1 {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScheduledMessageResponseDTOV1>> get(
             ScheduledMessageSearchDTOV1 search
-    ) {
+    ) throws BadFormattedDateException, ScheduleStatusNotFoundException {
         var vo = ScheduledMessageMapper.searchDTOV1ToVO(search);
         var list = scheduledMessageService.search(vo);
         return ResponseEntity.ok(ScheduledMessageMapper.scheduledMessageListToResponseDTOV1List(list));

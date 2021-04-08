@@ -53,6 +53,11 @@ public final class ScheduledMessageSearchVOBuilder {
         return this;
     }
 
+    public ScheduledMessageSearchVOBuilder status(ScheduleStatus status) {
+        scheduledMessageSearchVO.setStatus(status);
+        return this;
+    }
+
     public ScheduledMessageSearchVO build() {
         return scheduledMessageSearchVO;
     }

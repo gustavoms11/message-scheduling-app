@@ -3,6 +3,7 @@ package com.gustavoms.messagescheduling.message;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @ApiModel(value = "ScheduledMessageCreateDTOV1")
@@ -19,7 +20,7 @@ public class ScheduledMessageCreateDTOV1 {
     @ApiModelProperty(value = "Receiver platforms receiving the message",
             required = true,
             allowableValues = "MAIL,SMS,WHATSAPP,PUSH")
-    private Set<String> platforms;
+    private Set<String> platforms = new LinkedHashSet<>();
 
     @ApiModelProperty(value = "Message to be sent", required = true)
     private String message;

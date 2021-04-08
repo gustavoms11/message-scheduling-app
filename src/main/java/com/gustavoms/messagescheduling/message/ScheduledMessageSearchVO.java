@@ -12,6 +12,7 @@ public class ScheduledMessageSearchVO {
     private LocalDateTime createdAtEndDate;
     private LocalDateTime scheduledToStartDate;
     private LocalDateTime scheduledToEndDate;
+    private ScheduleStatus status;
 
     public int getPage() {
         return page;
@@ -75,5 +76,13 @@ public class ScheduledMessageSearchVO {
 
     public void setScheduledToEndDate(LocalDateTime scheduledToEndDate) {
         this.scheduledToEndDate = scheduledToEndDate;
+    }
+
+    public ScheduleStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ScheduleStatus status) {
+        this.status = status;
     }
 }
