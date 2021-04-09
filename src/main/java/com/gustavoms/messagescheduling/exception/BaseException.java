@@ -1,8 +1,10 @@
 package com.gustavoms.messagescheduling.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class BaseException extends Exception {
 
-    private int statusCode = 400;
+    private int statusCode = HttpStatus.BAD_REQUEST.value();
 
     public BaseException(String message) {
         super(message);

@@ -74,7 +74,7 @@ public class ScheduledMessageControllerV1 {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ScheduledMessageResponseDTOV1> singleGet(
         @ApiParam(value = "Scheduled Message ID") @PathVariable("scheduled-message-id") String scheduledMessageId
-    ) {
+    ) throws BaseException {
         var entity = scheduledMessageService.find(scheduledMessageId);
         return ResponseEntity.ok(ScheduledMessageMapper.scheduledMessageToResponseDTOV1(entity));
     }
@@ -84,10 +84,10 @@ public class ScheduledMessageControllerV1 {
             @ApiResponse(code = 204, message = "Schedule deleted successfully"),
             @ApiResponse(code = 404, message = "Schedule not found")
     })
-    @DeleteMapping(value = "/{scheduled-mesage-id}")
+    @DeleteMapping(value = "/{scheduled-message-id}")
     public ResponseEntity delete(
             @ApiParam(value = "Scheduled Message ID") @PathVariable("scheduled-message-id") String scheduledMessageId
-    ) {
+    ) throws BaseException {
         scheduledMessageService.delete(scheduledMessageId);
         return ResponseEntity.noContent().build();
     }

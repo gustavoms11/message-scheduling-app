@@ -16,16 +16,20 @@ public class ScheduledMessageSearchDTOV1 {
     @ApiParam(value = "Filter by receiver object id")
     private String receiverId;
 
-    @ApiParam(value = "Start filter range createdAt date")
+    @ApiParam(value = "Start filter range createdAt date",
+            example = "2020-01-01T10:00:00Z")
     private String createdAtStartDate;
 
-    @ApiParam(value = "End filter range createdAt date")
+    @ApiParam(value = "End filter range createdAt date",
+            example = "2020-01-01T10:00:00Z")
     private String createdAtEndDate;
 
-    @ApiParam(value = "Start filter range scheduledTo date")
+    @ApiParam(value = "Start filter range scheduledTo date",
+            example = "2020-01-01T10:00:00Z")
     private String scheduledToStartDate;
 
-    @ApiParam(value = "End filter range scheduledTo date")
+    @ApiParam(value = "End filter range scheduledTo date",
+            example = "2020-01-01T10:00:00Z")
     private String scheduledToEndDate;
 
     @ApiParam(value = "Actual schedule status")

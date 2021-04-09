@@ -1,6 +1,7 @@
 package com.gustavoms.messagescheduling.message;
 
 import com.gustavoms.messagescheduling.exception.BaseException;
+import com.gustavoms.messagescheduling.exception.ScheduledMessageNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,12 +39,24 @@ public class ScheduledMessageService {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ScheduledMessage find(String scheduledMessageId) {
-        return new ScheduledMessage();
+    public ScheduledMessage find(String scheduledMessageId) throws ScheduledMessageNotFoundException {
+        var scheduledMessage = scheduledMessageRepository.findById(scheduledMessageId);
+
+        if (scheduledMessage.isPresent()) {
+            return scheduledMessage.get();
+        } else {
+            throw new ScheduledMessageNotFoundException(scheduledMessageId);
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void delete(String scheduledMessageId) {
+    public void delete(String scheduledMessageId) throws ScheduledMessageNotFoundException {
+        var scheduledMessage = scheduledMessageRepository.findById(scheduledMessageId);
 
+        if (scheduledMessage.isPresent()) {
+            scheduledMessageRepository.delete(scheduledMessage.get());
+        } else {
+            throw new ScheduledMessageNotFoundException(scheduledMessageId);
+        }
     }
 }

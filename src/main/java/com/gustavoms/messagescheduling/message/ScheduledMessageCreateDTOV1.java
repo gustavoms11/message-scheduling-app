@@ -13,7 +13,7 @@ public class ScheduledMessageCreateDTOV1 {
     private String receiverId;
 
     @ApiModelProperty(value = "Message scheduled date, must follow ISO-8601 pattern",
-            example = "2020-01-01T10:00:00",
+            example = "2020-01-01T10:00:00Z",
             required = true)
     private String scheduledTo;
 
