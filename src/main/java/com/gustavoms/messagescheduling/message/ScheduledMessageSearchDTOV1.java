@@ -10,7 +10,8 @@ public class ScheduledMessageSearchDTOV1 {
     @ApiParam(value = "Page size param", example = "20", defaultValue = "20")
     private int pageSize = 20;
 
-    @ApiParam(value = "Order by param", allowableValues = "createdAt,scheduledTo")
+    @ApiParam(value = "Order by param",
+            allowableValues = "createdAt,scheduledTo,-createdAt,-scheduledTo")
     private String order;
 
     @ApiParam(value = "Filter by receiver object id")

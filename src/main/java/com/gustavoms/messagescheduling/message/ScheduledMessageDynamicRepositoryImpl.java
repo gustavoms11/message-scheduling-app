@@ -6,8 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public class ScheduledMessageDynamicRepositoryImpl implements ScheduledMessageDynamicRepository {
+
+    private static final Set<String> VALID_ORDER = Set.of("createdAt", "scheduledTo");
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -55,12 +58,25 @@ public class ScheduledMessageDynamicRepositoryImpl implements ScheduledMessageDy
         }
 
         sql.append(params.toString());
+
+        if (vo.getOrder() != null
+                && !vo.getOrder().isEmpty()
+                && QueryManipulator.isValidOrder(vo.getOrder(), VALID_ORDER)) {
+            sql.append("ORDER BY sm.");
+            sql.append(QueryManipulator.extractOrder(vo.getOrder()));
+            sql.append(" ");
+            sql.append(QueryManipulator.ascOrDesc(vo.getOrder()));
+        }
+
         var query = entityManager.createQuery(
                 sql.toString(), ScheduledMessage.class);
 
         for (var param : paramsMap.keySet()) {
             query.setParameter(param, paramsMap.get(param));
         }
+
+        query.setFirstResult((vo.getPage() - 1) * vo.getPageSize());
+        query.setMaxResults(vo.getPageSize());
 
         return query.getResultList();
     }

@@ -105,7 +105,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .get(String.format("http://localhost:%d%s%s",
                         port,
@@ -146,7 +145,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .delete(String.format("http://localhost:%d%s%s",
                         port,
@@ -157,7 +155,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .get(String.format("http://localhost:%d%s%s",
                         port,
@@ -191,7 +188,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .queryParam("receiverId", receiverId)
                 .get(String.format("http://localhost:%d%s",
@@ -232,7 +228,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .queryParam("receiverId", receiverId)
                 .queryParam("status", "SCHEDULED")
@@ -274,7 +269,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .queryParam("receiverId", receiverId)
                 .queryParam("scheduledToStartDate", DateConverter.fromDate(LocalDateTime.now().plusDays(2)))
@@ -317,7 +311,6 @@ public class ScheduledMessageControllerV1Test {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createDTO)
                 .when()
                 .queryParam("receiverId", receiverId)
                 .queryParam("createdAtStartDate", DateConverter.fromDate(LocalDateTime.now().minusDays(1)))
@@ -333,6 +326,263 @@ public class ScheduledMessageControllerV1Test {
                 .body("[0].scheduledTo", equalTo(scheduledTo))
                 .body("[0].status", equalTo("SCHEDULED"))
                 .body("[0].platforms", containsInAnyOrder("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .statusCode(200);
+    }
+
+    @Test
+    public void whenSearchByReceiverIdPaging() {
+        var receiverId = UUID.randomUUID().toString();
+        var scheduledTo = DateConverter.fromDate(LocalDateTime.now().plusDays(3));
+
+        var createDTO = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var response = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 1)
+                .queryParam("pageSize", 1)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("[0].receiverId", equalTo(receiverId))
+                .body("[0].message", equalTo("MESSAGE"))
+                .body("[0].id", equalTo(response.getId()))
+                .body("[0].createdAt", notNullValue())
+                .body("[0].scheduledTo", equalTo(scheduledTo))
+                .body("[0].status", equalTo("SCHEDULED"))
+                .body("[0].platforms", containsInAnyOrder("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 2)
+                .queryParam("pageSize", 1)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(0))
+                .statusCode(200);
+    }
+
+    @Test
+    public void whenSearchByReceiverIdByPageSize() {
+        var receiverId = UUID.randomUUID().toString();
+        var scheduledTo = DateConverter.fromDate(LocalDateTime.now().plusDays(3));
+
+        var createDTO1 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var createDTO2 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var response1 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO1)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        var response2 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO2)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 1)
+                .queryParam("pageSize", 1)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(1))
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 2)
+                .queryParam("pageSize", 1)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(1))
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 1)
+                .queryParam("pageSize", 2)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(2))
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("page", 2)
+                .queryParam("pageSize", 2)
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(0))
+                .statusCode(200);
+    }
+
+    @Test
+    public void whenSearchByReceiverIdOrderByScheduledToAsc() {
+        var receiverId = UUID.randomUUID().toString();
+        var scheduledTo1 = DateConverter.fromDate(LocalDateTime.now().plusDays(3));
+        var scheduledTo2 = DateConverter.fromDate(LocalDateTime.now().plusDays(4));
+
+        var createDTO1 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo1)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var createDTO2 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo2)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var response1 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO1)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        var response2 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO2)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("order", "scheduledTo")
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(2))
+                .body("[0].id", equalTo(response1.getId()))
+                .body("[1].id", equalTo(response2.getId()))
+                .statusCode(200);
+    }
+
+    @Test
+    public void whenSearchByReceiverIdOrderByScheduledToDesc() {
+        var receiverId = UUID.randomUUID().toString();
+        var scheduledTo1 = DateConverter.fromDate(LocalDateTime.now().plusDays(3));
+        var scheduledTo2 = DateConverter.fromDate(LocalDateTime.now().plusDays(4));
+
+        var createDTO1 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo1)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var createDTO2 = ScheduledMessageCreateDTOV1Builder
+                .aScheduledMessageCreateDTOV1()
+                .scheduledTo(scheduledTo2)
+                .message("MESSAGE")
+                .receiverId(receiverId)
+                .platforms(Set.of("SMS", "PUSH", "MAIL", "WHATSAPP"))
+                .build();
+
+        var response1 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO1)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        var response2 = given()
+                .contentType(ContentType.JSON)
+                .body(createDTO2)
+                .when()
+                .post(String.format("http://localhost:%d%s", port, "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .extract()
+                .as(ScheduledMessageResponseDTOV1.class);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("receiverId", receiverId)
+                .queryParam("order", "-scheduledTo")
+                .get(String.format("http://localhost:%d%s",
+                        port,
+                        "/message-scheduling/api/v1/scheduled-messages"))
+                .then()
+                .body("size()", equalTo(2))
+                .body("[0].id", equalTo(response2.getId()))
+                .body("[1].id", equalTo(response1.getId()))
                 .statusCode(200);
     }
 }
