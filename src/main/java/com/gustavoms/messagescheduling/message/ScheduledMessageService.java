@@ -35,7 +35,7 @@ public class ScheduledMessageService {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<ScheduledMessage> search(ScheduledMessageSearchVO vo) {
-        return new LinkedList<>();
+        return scheduledMessageRepository.search(vo);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)

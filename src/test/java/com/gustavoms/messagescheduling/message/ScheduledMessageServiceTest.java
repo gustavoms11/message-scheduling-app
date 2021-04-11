@@ -100,4 +100,13 @@ public class ScheduledMessageServiceTest {
         verify(scheduledMessageRepository).findById("ID");
         verify(scheduledMessageRepository, times(0)).delete(any(ScheduledMessage.class));
     }
+
+    @Test
+    public void whenSearchThenCallRepository() {
+        var vo = ScheduledMessageSearchVOBuilder.aScheduledMessageSearchVO().build();
+
+        scheduledMessageService.search(vo);
+
+        verify(scheduledMessageRepository).search(vo);
+    }
 }
