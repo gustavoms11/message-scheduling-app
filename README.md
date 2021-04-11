@@ -56,7 +56,7 @@ Ainda não possui suporte a uso do plugin do maven, deploy automático e paramet
 
 Para acessar a documentação, o endereço padrão é:
 
-`swagger-ui`:<http://localhost:8080/messaging-application/swagger-ui/>
+`swagger-ui`:<http://localhost:8080/message-scheduling/swagger-ui/>
 
 A aplicação possui um Controller contendo três Endpoints
 
